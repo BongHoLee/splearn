@@ -17,24 +17,19 @@ class MemberTest : FunSpec({
         }
 
         member = Member.create(
-            "leebongho@splearn.app",
-            "leebongho",
-            "secret",
-            passwordEncoder)
+            CreateRequest(
+                "leebongho@splearn.app",
+                "leebongho",
+                "secret"
+            ),
+            passwordEncoder
+        )
     }
 
     context("회원 생성") {
         test("회원은 기본적으로 PENDING 상태로 생성된다") {
 
             member.status shouldBe MemberStatus.PENDING
-        }
-
-        test("회원 생성 시 null 값이 전달되면 예외가 발생한다") {
-            val nullString: String? = null
-
-            shouldThrow<NullPointerException> {
-                Member.create(nullString!!, nullString, nullString, passwordEncoder)
-            }
         }
     }
 

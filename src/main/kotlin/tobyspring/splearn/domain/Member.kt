@@ -15,11 +15,11 @@ class Member private constructor(
         private set
 
     companion object {
-        fun create(email: String, nickname: String, password: String, passwordEncoder: PasswordEncoder): Member =
+        fun create(createRequest: CreateRequest, passwordEncoder: PasswordEncoder): Member =
             Member(
-                email = email,
-                nickname = nickname,
-                passwordHash = passwordEncoder.encode(password)
+                email = createRequest.email,
+                nickname = createRequest.nickname,
+                passwordHash = passwordEncoder.encode(createRequest.password)
             )
     }
 
@@ -40,6 +40,8 @@ class Member private constructor(
         this.status = MemberStatus.DEACTIVATED
     }
 
+    fun isActive(): Boolean = this.status == MemberStatus.ACTIVE
+
     fun verifyPassword(password: String, passwordEncoder: PasswordEncoder): Boolean {
         return passwordEncoder.matches(password, this.passwordHash)
     }
@@ -52,3 +54,9 @@ class Member private constructor(
         this.passwordHash = passwordEncoder.encode(password)
     }
 }
+
+data class CreateRequest(
+    val email: String,
+    val nickname: String,
+    val password: String
+)
