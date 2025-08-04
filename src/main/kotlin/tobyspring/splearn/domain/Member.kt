@@ -1,12 +1,28 @@
 package tobyspring.splearn.domain
 
-class Member(
+class Member private constructor(
     val email: String,
-    val nickname: String,
-    val passwordHash: String,
+    nickname: String,
+    passwordHash: String,
 ) {
+    var nickname = nickname
+        private set
+
+    var passwordHash = passwordHash
+        private set
+
     var status = MemberStatus.PENDING
-    private set
+        private set
+
+    companion object {
+        fun create(email: String, nickname: String, password: String, passwordEncoder: PasswordEncoder): Member =
+            Member(
+                email = email,
+                nickname = nickname,
+                passwordHash = passwordEncoder.encode(password)
+            )
+    }
+
 
     fun activate() {
         check(this.status == MemberStatus.PENDING) {
@@ -22,5 +38,17 @@ class Member(
         }
 
         this.status = MemberStatus.DEACTIVATED
+    }
+
+    fun verifyPassword(password: String, passwordEncoder: PasswordEncoder): Boolean {
+        return passwordEncoder.matches(password, this.passwordHash)
+    }
+
+    fun changeNickname(nickname: String) {
+        this.nickname = nickname
+    }
+
+    fun changePassword(password: String, passwordEncoder: PasswordEncoder) {
+        this.passwordHash = passwordEncoder.encode(password)
     }
 }

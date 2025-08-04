@@ -6,9 +6,25 @@ import io.kotest.matchers.shouldBe
 
 class MemberTest : FunSpec({
 
+    lateinit var member: Member
+    lateinit var passwordEncoder: PasswordEncoder
+
+    beforeEach {
+
+        passwordEncoder = object : PasswordEncoder {
+            override fun encode(password: String): String = password.uppercase()
+            override fun matches(password: String, passwordHash: String): Boolean = encode(password) == passwordHash
+        }
+
+        member = Member.create(
+            "leebongho@splearn.app",
+            "leebongho",
+            "secret",
+            passwordEncoder)
+    }
+
     context("회원 생성") {
         test("회원은 기본적으로 PENDING 상태로 생성된다") {
-            val member = Member("leebongho@splearn.app", "leebongho", "secret")
 
             member.status shouldBe MemberStatus.PENDING
         }
@@ -17,30 +33,27 @@ class MemberTest : FunSpec({
             val nullString: String? = null
 
             shouldThrow<NullPointerException> {
-                Member(nullString!!, nullString, nullString)
+                Member.create(nullString!!, nullString, nullString, passwordEncoder)
             }
         }
     }
 
     context("회원 상태 변경") {
         test("PENDING 상태의 회원을 ACTIVE로 변경할 수 있다") {
-            val member = Member("leebongho@splearn.app", "leebongho", "secret")
 
             member.activate()
             member.status shouldBe MemberStatus.ACTIVE
         }
 
         test("ACTIVE 상태인 회원은 다시 ACTIVATE 할 수 없다.") {
-            val member = Member("leebongho@splearn.app", "leebongho", "secret")
             member.activate()
 
-            shouldThrow< IllegalStateException>{
+            shouldThrow<IllegalStateException> {
                 member.activate()
             }
         }
 
         test("ACTIVE 상태인 회원은 DEACTIVATE 할 수 있다.") {
-            val member = Member("leebongho@splearn.app", "leebongho", "secret")
             member.activate()
 
             member.deactivate()
@@ -49,18 +62,43 @@ class MemberTest : FunSpec({
         }
 
         test("ACTIVE가 아닌 회원은 DEACTIVATE 할 수 없다.") {
-            val member = Member("leebongho@splearn.app", "leebongho", "secret")
 
-            shouldThrow< IllegalStateException>{
+            shouldThrow<IllegalStateException> {
                 member.deactivate()
             }
 
             member.activate()
             member.deactivate()
 
-            shouldThrow< IllegalStateException>{
+            shouldThrow<IllegalStateException> {
                 member.deactivate()
             }
+        }
+    }
+
+    context("비밀번호 검증") {
+        test("비밀번호가 일치하면 true를 반환한다") {
+            member.verifyPassword("secret", passwordEncoder) shouldBe true
+        }
+
+        test("비밀번호가 일치하지 않으면 false를 반환한다") {
+            member.verifyPassword("wrongpassword", passwordEncoder) shouldBe false
+        }
+    }
+
+    context("속성 변경") {
+        test("닉네임을 변경할 수 있다.") {
+            member.nickname shouldBe "leebongho"
+
+            member.changeNickname("beaoh")
+
+            member.nickname shouldBe "beaoh"
+        }
+
+        test("패스워드를 변경할 수 있다.") {
+            member.changePassword("new secret", passwordEncoder)
+
+            member.verifyPassword("new secret", passwordEncoder = passwordEncoder)
         }
     }
 })
