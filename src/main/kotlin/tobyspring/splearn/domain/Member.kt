@@ -1,10 +1,14 @@
 package tobyspring.splearn.domain
 
 class Member private constructor(
-    val email: String,
+    email: String,
     nickname: String,
     passwordHash: String,
 ) {
+
+    var email = email
+        private set
+
     var nickname = nickname
         private set
 
@@ -53,10 +57,11 @@ class Member private constructor(
     fun changePassword(password: String, passwordEncoder: PasswordEncoder) {
         this.passwordHash = passwordEncoder.encode(password)
     }
+
+    data class CreateRequest(
+        val email: String,
+        val nickname: String,
+        val password: String
+    )
 }
 
-data class CreateRequest(
-    val email: String,
-    val nickname: String,
-    val password: String
-)

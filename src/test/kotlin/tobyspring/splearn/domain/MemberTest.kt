@@ -17,7 +17,7 @@ class MemberTest : FunSpec({
         }
 
         member = Member.create(
-            CreateRequest(
+            Member.CreateRequest(
                 "leebongho@splearn.app",
                 "leebongho",
                 "secret"
@@ -97,4 +97,3 @@ class MemberTest : FunSpec({
         }
     }
 })
-
