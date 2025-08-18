@@ -1,5 +1,6 @@
 package tobyspring.splearn.domain
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -94,6 +95,32 @@ class MemberTest : FunSpec({
             member.changePassword("new secret", passwordEncoder)
 
             member.verifyPassword("new secret", passwordEncoder = passwordEncoder)
+        }
+    }
+
+    context("email 검증") {
+        test("유효하지 않은 이메일 패턴은 예외를 발생시킨다.") {
+            shouldThrow<IllegalStateException> {
+                Member.create(
+                    Member.CreateRequest(
+                        "invalid-email",
+                        "nickname",
+                        "password"
+                    ),
+                    passwordEncoder
+                )
+            }
+
+            shouldNotThrowAny {
+                Member.create(
+                    Member.CreateRequest(
+                        "leebongho@splearn.app",
+                        "leebongho",
+                        "secret"
+                    ),
+                    passwordEncoder
+                )
+            }
         }
     }
 })

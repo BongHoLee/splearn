@@ -1,7 +1,7 @@
 package tobyspring.splearn.domain
 
 class Member private constructor(
-    email: String,
+    email: Email,
     nickname: String,
     passwordHash: String,
 ) {
@@ -19,14 +19,16 @@ class Member private constructor(
         private set
 
     companion object {
-        fun create(createRequest: CreateRequest, passwordEncoder: PasswordEncoder): Member =
-            Member(
-                email = createRequest.email,
+        fun create(createRequest: CreateRequest, passwordEncoder: PasswordEncoder): Member {
+
+            return Member(
+                email = Email(createRequest.email),
                 nickname = createRequest.nickname,
                 passwordHash = passwordEncoder.encode(createRequest.password)
             )
-    }
+        }
 
+    }
 
     fun activate() {
         check(this.status == MemberStatus.PENDING) {
@@ -64,4 +66,3 @@ class Member private constructor(
         val password: String
     )
 }
-
