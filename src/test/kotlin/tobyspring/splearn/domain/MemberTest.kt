@@ -17,8 +17,8 @@ class MemberTest : FunSpec({
             override fun matches(password: String, passwordHash: String): Boolean = encode(password) == passwordHash
         }
 
-        member = Member.create(
-            Member.CreateRequest(
+        member = Member.register(
+            Member.RegisterRequest(
                 "leebongho@splearn.app",
                 "leebongho",
                 "secret"
@@ -27,7 +27,7 @@ class MemberTest : FunSpec({
         )
     }
 
-    context("회원 생성") {
+    context("회원 등록") {
         test("회원은 기본적으로 PENDING 상태로 생성된다") {
 
             member.status shouldBe MemberStatus.PENDING
@@ -101,8 +101,8 @@ class MemberTest : FunSpec({
     context("email 검증") {
         test("유효하지 않은 이메일 패턴은 예외를 발생시킨다.") {
             shouldThrow<IllegalStateException> {
-                Member.create(
-                    Member.CreateRequest(
+                Member.register(
+                    Member.RegisterRequest(
                         "invalid-email",
                         "nickname",
                         "password"
@@ -112,8 +112,8 @@ class MemberTest : FunSpec({
             }
 
             shouldNotThrowAny {
-                Member.create(
-                    Member.CreateRequest(
+                Member.register(
+                    Member.RegisterRequest(
                         "leebongho@splearn.app",
                         "leebongho",
                         "secret"
