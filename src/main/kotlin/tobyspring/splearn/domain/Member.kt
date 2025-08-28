@@ -1,22 +1,34 @@
 package tobyspring.splearn.domain
 
-class Member private constructor(
+import jakarta.persistence.Embedded
+import jakarta.persistence.Entity
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+
+@Entity
+class Member protected constructor(
+    id: Long? = null,
     email: Email,
     nickname: String,
     passwordHash: String,
 ) {
+    @Id
+    var id = id
+        protected set
 
+    @Embedded
     var email = email
-        private set
+        protected set
 
     var nickname = nickname
-        private set
+        protected set
 
     var passwordHash = passwordHash
-        private set
+        protected set
 
+    @Enumerated
     var status = MemberStatus.PENDING
-        private set
+        protected set
 
     companion object {
         fun register(registerRequest: RegisterRequest, passwordEncoder: PasswordEncoder): Member {
