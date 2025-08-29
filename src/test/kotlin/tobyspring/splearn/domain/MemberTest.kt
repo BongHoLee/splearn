@@ -4,6 +4,8 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegisterRequest
+import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
 
 class MemberTest : FunSpec({
 
@@ -12,17 +14,9 @@ class MemberTest : FunSpec({
 
     beforeEach {
 
-        passwordEncoder = object : PasswordEncoder {
-            override fun encode(password: String): String = password.uppercase()
-            override fun matches(password: String, passwordHash: String): Boolean = encode(password) == passwordHash
-        }
-
+        passwordEncoder = createPasswordEncoder()
         member = Member.register(
-            Member.RegisterRequest(
-                "leebongho@splearn.app",
-                "leebongho",
-                "secret"
-            ),
+            createMemberRegisterRequest(),
             passwordEncoder
         )
     }
@@ -101,26 +95,14 @@ class MemberTest : FunSpec({
     context("email 검증") {
         test("유효하지 않은 이메일 패턴은 예외를 발생시킨다.") {
             shouldThrow<IllegalStateException> {
-                Member.register(
-                    Member.RegisterRequest(
-                        "invalid-email",
-                        "nickname",
-                        "password"
-                    ),
-                    passwordEncoder
-                )
+                Member.register(createMemberRegisterRequest("invalid-email"), passwordEncoder)
             }
 
             shouldNotThrowAny {
-                Member.register(
-                    Member.RegisterRequest(
-                        "leebongho@splearn.app",
-                        "leebongho",
-                        "secret"
-                    ),
-                    passwordEncoder
-                )
+                Member.register(createMemberRegisterRequest(), passwordEncoder)
             }
         }
     }
 })
+
+

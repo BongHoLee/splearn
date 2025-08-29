@@ -1,11 +1,11 @@
 package tobyspring.splearn.domain
 
-import jakarta.persistence.Embedded
-import jakarta.persistence.Entity
-import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
+import jakarta.persistence.*
+import org.hibernate.annotations.NaturalId
+import org.hibernate.annotations.NaturalIdCache
 
 @Entity
+@NaturalIdCache
 class Member protected constructor(
     id: Long? = null,
     email: Email,
@@ -13,10 +13,12 @@ class Member protected constructor(
     passwordHash: String,
 ) {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id = id
         protected set
 
     @Embedded
+    @NaturalId       // 자연키로써 식별성과 고유성(중복 불가)을 보장하기 위함
     var email = email
         protected set
 
@@ -26,7 +28,7 @@ class Member protected constructor(
     var passwordHash = passwordHash
         protected set
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     var status = MemberStatus.PENDING
         protected set
 
@@ -49,6 +51,7 @@ class Member protected constructor(
 
         this.status = MemberStatus.ACTIVE
     }
+
 
     fun deactivate() {
         check(this.status == MemberStatus.ACTIVE) {
