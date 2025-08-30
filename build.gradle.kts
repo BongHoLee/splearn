@@ -40,6 +40,8 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
     testImplementation("io.kotest:kotest-assertions-core:5.7.2")
     testImplementation("io.kotest:kotest-assertions-json:5.7.2")
+    // kotest spring integration
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     // mockk
     testImplementation("io.mockk:mockk:1.13.12")
 }
