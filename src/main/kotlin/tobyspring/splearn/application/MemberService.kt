@@ -8,6 +8,7 @@ import tobyspring.splearn.application.required.MemberRepository
 import tobyspring.splearn.domain.DuplicateEmailException
 import tobyspring.splearn.domain.Email
 import tobyspring.splearn.domain.Member
+import tobyspring.splearn.domain.MemberRegisterRequest
 import tobyspring.splearn.domain.PasswordEncoder
 
 @Service
@@ -18,11 +19,11 @@ class MemberService(
     private val passwordEncoder: PasswordEncoder
 ) : MemberRegister {
 
-    override fun register(request: Member.RegisterRequest): Member {
+    override fun register(request: MemberRegisterRequest): Member {
 
         checkDuplicateEmail(request)
 
-        val member = Member.register(registerRequest = request, passwordEncoder = passwordEncoder)
+        val member = Member.register(memberRegisterRequest = request, passwordEncoder = passwordEncoder)
 
         memberRepository.save(member)
 
@@ -31,7 +32,7 @@ class MemberService(
         return member
     }
 
-    private fun checkDuplicateEmail(request: Member.RegisterRequest) {
+    private fun checkDuplicateEmail(request: MemberRegisterRequest) {
         memberRepository.findByEmail(Email(request.email))?.let {
             throw DuplicateEmailException("이미 사용중인 이메일 입니다 : ${request.email}")
         }

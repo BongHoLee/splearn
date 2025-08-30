@@ -2,8 +2,8 @@ package tobyspring.splearn.domain
 
 class MemberFixture {
     companion object{
-        fun createMemberRegisterRequest(email: String = "leebongho@splearn.com"): Member.RegisterRequest {
-            return Member.RegisterRequest(
+        fun createMemberRegisterRequest(email: String = "leebongho@splearn.com"): MemberRegisterRequest {
+            return MemberRegisterRequest(
                 email = email,
                 nickname = "leebongho",
                 password = "secret"

@@ -8,7 +8,7 @@ import org.hibernate.annotations.NaturalIdCache
 @NaturalIdCache
 class Member protected constructor(
     id: Long? = null,
-    email: Email,
+    email: tobyspring.splearn.domain.Email,
     nickname: String,
     passwordHash: String,
 ) {
@@ -33,12 +33,12 @@ class Member protected constructor(
         protected set
 
     companion object {
-        fun register(registerRequest: RegisterRequest, passwordEncoder: PasswordEncoder): Member {
+        fun register(memberRegisterRequest: MemberRegisterRequest, passwordEncoder: PasswordEncoder): Member {
 
             return Member(
-                email = Email(registerRequest.email),
-                nickname = registerRequest.nickname,
-                passwordHash = passwordEncoder.encode(registerRequest.password)
+                email = Email(memberRegisterRequest.email),
+                nickname = memberRegisterRequest.nickname,
+                passwordHash = passwordEncoder.encode(memberRegisterRequest.password)
             )
         }
 
@@ -75,9 +75,4 @@ class Member protected constructor(
         this.passwordHash = passwordEncoder.encode(password)
     }
 
-    data class RegisterRequest(
-        val email: String,
-        val nickname: String,
-        val password: String
-    )
 }

@@ -103,6 +103,12 @@ class MemberTest : FunSpec({
             }
         }
     }
+
+    context("Member.RegisterRequest 검증") {
+        test("RegisterRequest에 정의된 Validation 수행") {
+            MemberRegisterRequest("leebongho@gmail.com", "beaoh", "1234")
+        }
+    }
 })
 
 
