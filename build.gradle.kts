@@ -18,6 +18,8 @@ java {
 repositories {
     mavenCentral()
 }
+// Mockito 사용하지 않고 MockK만 사용하므로 불필요한 Mockito/inline agent 경고 제거를 위해
+// spring-boot-starter-test 에서 org.mockito 그룹 전체를 exclude 한다.
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -34,7 +36,9 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.mockito")
+    }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // kotest
@@ -61,4 +65,5 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // 기존 -javaagent 빈 경로 전달로 인한 JVM 초기화 실패 제거
 }
