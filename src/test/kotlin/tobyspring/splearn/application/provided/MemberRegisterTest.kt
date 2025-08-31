@@ -27,7 +27,7 @@ import tobyspring.splearn.support.TestContainersConfig
 @SpringBootTest
 @Transactional
 @Import(TestContainersConfig::class)
-class MemberRegisterTest(
+internal class MemberRegisterTest(
     private val memberRegister: MemberRegister,
     private val entityManager: EntityManager
 ) : FunSpec() {

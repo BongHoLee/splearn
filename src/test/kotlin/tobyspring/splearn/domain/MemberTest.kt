@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegisterRequest
 import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
 
-class MemberTest : FunSpec({
+internal class MemberTest : FunSpec({
 
     lateinit var member: Member
     lateinit var passwordEncoder: PasswordEncoder

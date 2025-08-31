@@ -12,7 +12,7 @@ import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegisterReq
 import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
 
 @DataJpaTest
-class MemberRepositoryTest {
+internal class MemberRepositoryTest {
 
     @Autowired
     lateinit var memberRepository: MemberRepository

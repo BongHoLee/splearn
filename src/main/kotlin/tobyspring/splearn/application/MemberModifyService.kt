@@ -4,20 +4,18 @@ import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
+import tobyspring.splearn.application.provided.MemberFinder
 import tobyspring.splearn.application.provided.MemberRegister
 import tobyspring.splearn.application.required.EmailSender
 import tobyspring.splearn.application.required.MemberRepository
-import tobyspring.splearn.domain.DuplicateEmailException
-import tobyspring.splearn.domain.Email
-import tobyspring.splearn.domain.Member
-import tobyspring.splearn.domain.MemberRegisterRequest
-import tobyspring.splearn.domain.PasswordEncoder
+import tobyspring.splearn.domain.*
 
 @Service
 @Transactional
 @Validated
-class MemberService(
+class MemberModifyService(
     private val memberRepository: MemberRepository,
+    private val memberFinder: MemberFinder,
     private val emailSender: EmailSender,
     private val passwordEncoder: PasswordEncoder,
 ) : MemberRegister {
@@ -36,17 +34,11 @@ class MemberService(
     }
 
     override fun activate(memberId: Long): Member {
-        val member = findByIdOrThrow(memberId)
+        val member = memberFinder.find(memberId)
 
         member.activate()
 
         return memberRepository.save(member)
-    }
-
-    private fun findByIdOrThrow(memberId: Long): Member {
-        return checkNotNull(memberRepository.findById(memberId)) {
-            "존재하지 않는 회원입니다. memberId: $memberId"
-        }
     }
 
     private fun checkDuplicateEmail(request: MemberRegisterRequest) {
@@ -58,5 +50,4 @@ class MemberService(
     private fun sendWelcomeEmail(member: Member) {
         emailSender.send(member.email, "등록을 완료해주세요", "아래 링크를 클릭해서 등록을 완료해주세요.")
     }
-
 }

@@ -15,7 +15,7 @@ import tobyspring.splearn.domain.PasswordEncoder
  * - Fake EmailSender, 단순 PasswordEncoder 제공
  */
 @Configuration
-class TestContainersConfig {
+internal class TestContainersConfig {
     private val log = LoggerFactory.getLogger(TestContainersConfig::class.java)
 
     @Bean
