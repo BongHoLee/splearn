@@ -68,7 +68,7 @@ class MemberTest : FunSpec({
 
     context("비밀번호 검증") {
         test("비밀번호가 일치하면 true를 반환한다") {
-            member.verifyPassword("secret", passwordEncoder) shouldBe true
+            member.verifyPassword("verysecret2", passwordEncoder) shouldBe true
         }
 
         test("비밀번호가 일치하지 않으면 false를 반환한다") {
@@ -101,12 +101,6 @@ class MemberTest : FunSpec({
             shouldNotThrowAny {
                 Member.register(createMemberRegisterRequest(), passwordEncoder)
             }
-        }
-    }
-
-    context("Member.RegisterRequest 검증") {
-        test("RegisterRequest에 정의된 Validation 수행") {
-            MemberRegisterRequest("leebongho@gmail.com", "beaoh", "1234")
         }
     }
 })

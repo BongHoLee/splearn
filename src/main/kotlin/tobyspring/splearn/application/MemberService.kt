@@ -1,7 +1,9 @@
 package tobyspring.splearn.application
 
 import jakarta.transaction.Transactional
+import jakarta.validation.Valid
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import tobyspring.splearn.application.provided.MemberRegister
 import tobyspring.splearn.application.required.EmailSender
 import tobyspring.splearn.application.required.MemberRepository
@@ -13,13 +15,14 @@ import tobyspring.splearn.domain.PasswordEncoder
 
 @Service
 @Transactional
+@Validated
 class MemberService(
     private val memberRepository: MemberRepository,
     private val emailSender: EmailSender,
     private val passwordEncoder: PasswordEncoder
 ) : MemberRegister {
 
-    override fun register(request: MemberRegisterRequest): Member {
+    override fun register(@Valid request: MemberRegisterRequest): Member {
 
         checkDuplicateEmail(request)
 

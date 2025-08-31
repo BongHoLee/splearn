@@ -6,12 +6,13 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import jakarta.transaction.Transactional
-import org.springframework.beans.factory.annotation.Autowired
+import jakarta.validation.ConstraintViolationException
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import tobyspring.splearn.domain.DuplicateEmailException
 import tobyspring.splearn.domain.MemberFixture
+import tobyspring.splearn.domain.MemberRegisterRequest
 import tobyspring.splearn.domain.MemberStatus
 import tobyspring.splearn.support.TestContainersConfig
 
@@ -26,7 +27,7 @@ import tobyspring.splearn.support.TestContainersConfig
 @Transactional
 @Import(TestContainersConfig::class)
 class MemberRegisterTest(
-    private val memberRegister: MemberRegister
+    private val memberRegister: MemberRegister,
 ) : FunSpec() {
     override fun extensions() = listOf(SpringExtension)
 
@@ -46,7 +47,7 @@ class MemberRegisterTest(
         /**
          * 중복 이메일은 (현재 구현상으로는) 도메인 모델에서 검증할 수 없다.
          * 따라서 이 테스트는 애플리케이션 서비스 테스트를 해야한다.
-          */
+         */
         test("회원 등록 - 중복 이메일 등록인 경우 예외가 발생") {
             memberRegister.register(MemberFixture.createMemberRegisterRequest())
 
@@ -54,6 +55,22 @@ class MemberRegisterTest(
                 memberRegister.register(MemberFixture.createMemberRegisterRequest())
             }
         }
+
+
+        test("RegisterRequest에 정의된 Validation 수행 - password 길이 8 미만이면 실패") {
+            notValidException(MemberRegisterRequest("leebongho@gmail.com", "beaoh", "1234")) // password too short
+                .constraintViolations.let { violations ->
+                    violations.size shouldBe 1
+                    violations.first().propertyPath!!.last().toString() shouldBe "password"
+                }
+        }
+
     }
 
+
+    private fun notValidException(invalid: MemberRegisterRequest): ConstraintViolationException {
+        return shouldThrowExactly<ConstraintViolationException> {
+            memberRegister.register(invalid)
+        }
+    }
 }
