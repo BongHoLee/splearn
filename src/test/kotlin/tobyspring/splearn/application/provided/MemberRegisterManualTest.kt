@@ -74,6 +74,10 @@ class MemberRegisterManualTest : FunSpec({
         override fun findByEmail(email: Email): Member? {
             return null
         }
+
+        override fun findById(memberId: Long): Member? {
+            return null
+        }
     }
 
     private class EmailSenderStub : EmailSender {

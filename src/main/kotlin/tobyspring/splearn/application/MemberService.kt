@@ -19,7 +19,7 @@ import tobyspring.splearn.domain.PasswordEncoder
 class MemberService(
     private val memberRepository: MemberRepository,
     private val emailSender: EmailSender,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
 ) : MemberRegister {
 
     override fun register(@Valid request: MemberRegisterRequest): Member {
@@ -35,6 +35,20 @@ class MemberService(
         return member
     }
 
+    override fun activate(memberId: Long): Member {
+        val member = findByIdOrThrow(memberId)
+
+        member.activate()
+
+        return memberRepository.save(member)
+    }
+
+    private fun findByIdOrThrow(memberId: Long): Member {
+        return checkNotNull(memberRepository.findById(memberId)) {
+            "존재하지 않는 회원입니다. memberId: $memberId"
+        }
+    }
+
     private fun checkDuplicateEmail(request: MemberRegisterRequest) {
         memberRepository.findByEmail(Email(request.email))?.let {
             throw DuplicateEmailException("이미 사용중인 이메일 입니다 : ${request.email}")
@@ -44,4 +58,5 @@ class MemberService(
     private fun sendWelcomeEmail(member: Member) {
         emailSender.send(member.email, "등록을 완료해주세요", "아래 링크를 클릭해서 등록을 완료해주세요.")
     }
+
 }

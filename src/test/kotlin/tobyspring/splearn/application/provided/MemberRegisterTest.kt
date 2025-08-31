@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import jakarta.validation.ConstraintViolationException
 import org.springframework.boot.test.context.SpringBootTest
@@ -28,6 +29,7 @@ import tobyspring.splearn.support.TestContainersConfig
 @Import(TestContainersConfig::class)
 class MemberRegisterTest(
     private val memberRegister: MemberRegister,
+    private val entityManager: EntityManager
 ) : FunSpec() {
     override fun extensions() = listOf(SpringExtension)
 
@@ -63,6 +65,25 @@ class MemberRegisterTest(
                     violations.size shouldBe 1
                     violations.first().propertyPath!!.last().toString() shouldBe "password"
                 }
+        }
+
+        /**
+         * 테스트 환경에서는 트랜잭션 범위에서 register, activate가 모두 수행되기 때문에, INSERT 쿼리만 보임
+         * 이를 보완하고 실제 INSERT, UPDATE 쿼리가 나가는지 확인하기 위해 entityManager flush, clear를 직접 수행
+         */
+        test("activate") {
+            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
+
+            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
+            entityManager.flush()
+            entityManager.clear()
+
+            val activated = memberRegister.activate(member.id!!)
+
+            // flush를 해줘야 update 쿼리 발생
+            entityManager.flush()
+
+            activated.status shouldBe MemberStatus.ACTIVE
         }
 
     }
