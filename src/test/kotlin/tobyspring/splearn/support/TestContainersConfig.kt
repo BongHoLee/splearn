@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.springframework.context.annotation.Profile
 import tobyspring.splearn.application.required.EmailSender
 import tobyspring.splearn.domain.Email
 import tobyspring.splearn.domain.PasswordEncoder

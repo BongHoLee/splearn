@@ -2,7 +2,6 @@ package tobyspring.splearn.domain
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
-import io.kotest.matchers.shouldBe
 
 internal class EmailTest : FunSpec({
     context(" 이메일에 대한 동등성 검사") {
