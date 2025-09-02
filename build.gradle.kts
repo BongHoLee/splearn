@@ -27,6 +27,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.security:spring-security-core")
 
     /**
      *  SpringBoot3.1 버전부터 추가됨. 로컬에서 docker-compose를 활용하여 autoconfiguration으로 자동 컨테이너 기동/종료 시 셧다운됨.

@@ -1,2 +1,14 @@
 spring:
-  application.name: splearn   # ? ?????? ??? console ?? ??? ???!
+  application.name: splearn   #
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/splearn?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: spring
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update   # 초기 스키마 자동 생성 목적. 필요 시 validate 로 변경.
+    properties:
+      hibernate:
+        format_sql: true
