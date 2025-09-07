@@ -1,16 +1,16 @@
 package tobyspring.splearn.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
-
-@Embeddable
 data class Email(
-    @Column(name = "email_address", length = 150)
-    val value: String
+    val address: String
 ) {
+    // JPA를 위한 no-arg 생성자 (internal로 제한하여 외부 직접 사용 방지)
+    internal constructor() : this("")
+
     init {
-        check(value.isNotBlank()) { "이메일은 비어있을 수 없습니다." }
-        check(EMAIL_PATTERN.matches(value)) { "이메일 형식이 올바르지 않습니다: $value" }
+        // 빈 문자열은 JPA 기본 생성자용이므로 검증에서 제외
+        if (address.isNotBlank()) {
+            check(EMAIL_PATTERN.matches(address)) { "이메일 형식이 올바르지 않습니다: $address" }
+        }
     }
 
     companion object {

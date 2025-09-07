@@ -11,6 +11,6 @@ import tobyspring.splearn.domain.Email
 class DummyEmailSender : EmailSender {
     private val logger = LoggerFactory.getLogger(this::class.java)
     override fun send(email: Email, subject: String, body: String) {
-        logger.info("this is DummyEmailSender - to={}, subject={}, body={}", email.value, subject, body)
+        logger.info("this is DummyEmailSender - to={}, subject={}, body={}", email.address, subject, body)
     }
 }

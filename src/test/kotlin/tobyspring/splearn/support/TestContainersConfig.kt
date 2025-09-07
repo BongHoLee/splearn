@@ -29,7 +29,7 @@ internal class TestContainersConfig {
     @Primary
     fun testEmailSender(): EmailSender = object : EmailSender {
         override fun send(email: Email, subject: String, body: String) {
-            log.info("[TestEmailSender] to={}, subject={}, body={}", email.value, subject, body)
+            log.info("[TestEmailSender] to={}, subject={}, body={}", email.address, subject, body)
         }
     }
 }

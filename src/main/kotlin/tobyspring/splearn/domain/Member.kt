@@ -1,33 +1,25 @@
 package tobyspring.splearn.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
 import org.hibernate.annotations.NaturalId
-import org.hibernate.annotations.NaturalIdCache
 
 @Entity
-@Table(name = "member", uniqueConstraints = [UniqueConstraint(name = "uk_member_email", columnNames = ["email_address"])])
-@NaturalIdCache
 class Member (
     email: Email,
     nickname: String,
     passwordHash: String,
 ) : BaseEntity() {
 
-    @Embedded
     @NaturalId       // 자연키로써 식별성과 고유성(중복 불가)을 보장하기 위함
     var email = email
         protected set
 
-    @Column(length = 100, nullable = false)
     var nickname = nickname
         protected set
 
-    @Column(length = 200, nullable = false)
     var passwordHash = passwordHash
         protected set
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50, nullable = false)
     var status = MemberStatus.PENDING
         protected set
 
