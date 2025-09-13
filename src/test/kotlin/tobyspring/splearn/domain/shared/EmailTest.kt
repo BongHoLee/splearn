@@ -1,4 +1,4 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.shared
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual

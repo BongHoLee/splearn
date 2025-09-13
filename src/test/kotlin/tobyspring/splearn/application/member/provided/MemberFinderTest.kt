@@ -1,4 +1,4 @@
-package tobyspring.splearn.application.provided
+package tobyspring.splearn.application.member.provided
 
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-import tobyspring.splearn.domain.MemberFixture
+import tobyspring.splearn.domain.member.MemberFixture
 import tobyspring.splearn.support.TestContainersConfig
 
 @ActiveProfiles("test")

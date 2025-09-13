@@ -1,4 +1,4 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.shared
 
 data class Email(
     val address: String

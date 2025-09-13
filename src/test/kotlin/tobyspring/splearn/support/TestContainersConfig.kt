@@ -4,9 +4,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import tobyspring.splearn.application.required.EmailSender
-import tobyspring.splearn.domain.Email
-import tobyspring.splearn.domain.PasswordEncoder
+import tobyspring.splearn.application.member.required.EmailSender
+import tobyspring.splearn.domain.shared.Email
+import tobyspring.splearn.domain.member.PasswordEncoder
 
 /**
  * 테스트 전용 Bean 구성.

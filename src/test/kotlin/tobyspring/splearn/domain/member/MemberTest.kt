@@ -1,11 +1,12 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.member
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegisterRequest
-import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
+import io.kotest.matchers.shouldNotBe
+import tobyspring.splearn.domain.member.MemberFixture.Companion.createMemberRegisterRequest
+import tobyspring.splearn.domain.member.MemberFixture.Companion.createPasswordEncoder
 
 internal class MemberTest : FunSpec({
 
@@ -25,6 +26,7 @@ internal class MemberTest : FunSpec({
         test("회원은 기본적으로 PENDING 상태로 생성된다") {
 
             member.status shouldBe MemberStatus.PENDING
+            member.detail.registeredAt shouldNotBe null
         }
     }
 
@@ -33,6 +35,7 @@ internal class MemberTest : FunSpec({
 
             member.activate()
             member.status shouldBe MemberStatus.ACTIVE
+            member.detail.activatedAt shouldNotBe null
         }
 
         test("ACTIVE 상태인 회원은 다시 ACTIVATE 할 수 없다.") {
@@ -49,6 +52,7 @@ internal class MemberTest : FunSpec({
             member.deactivate()
 
             member.status shouldBe MemberStatus.DEACTIVATED
+            member.detail.deactivatedAt shouldNotBe null
         }
 
         test("ACTIVE가 아닌 회원은 DEACTIVATE 할 수 없다.") {

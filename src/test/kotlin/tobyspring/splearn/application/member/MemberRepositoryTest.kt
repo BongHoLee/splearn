@@ -1,5 +1,7 @@
-package tobyspring.splearn.application.required
+package tobyspring.splearn.application.member.required
 
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -7,9 +9,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.dao.DataIntegrityViolationException
-import tobyspring.splearn.domain.Member
-import tobyspring.splearn.domain.MemberFixture.Companion.createMemberRegisterRequest
-import tobyspring.splearn.domain.MemberFixture.Companion.createPasswordEncoder
+import tobyspring.splearn.domain.member.Member
+import tobyspring.splearn.domain.member.MemberFixture.Companion.createMemberRegisterRequest
+import tobyspring.splearn.domain.member.MemberFixture.Companion.createPasswordEncoder
+import tobyspring.splearn.domain.member.MemberStatus
 
 @DataJpaTest
 internal class MemberRepositoryTest {
@@ -33,6 +36,11 @@ internal class MemberRepositoryTest {
         // save 했다고 해서 save 되는게 아닐 수 있다(flush 되지 않고 SQL 실행이 안될 수 있다)
         // 그래서 강제로 flush 를 해준다
         entityManager.flush()
+        entityManager.clear()
+
+        val found = memberRepository.findById(member.id!!)!!
+        found.status shouldBe MemberStatus.PENDING
+        found.detail.registeredAt shouldNotBe null
 
     }
 

@@ -1,18 +1,18 @@
-package tobyspring.splearn.application
+package tobyspring.splearn.application.member
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import tobyspring.splearn.application.provided.MemberFinder
-import tobyspring.splearn.application.required.MemberRepository
-import tobyspring.splearn.domain.Member
+import tobyspring.splearn.application.member.provided.MemberFinder
+import tobyspring.splearn.application.member.required.MemberRepository
+import tobyspring.splearn.domain.member.Member
 
 @Service
 @Transactional
 @Validated
 class MemberQueryService(
     private val memberRepository: MemberRepository
-) : MemberFinder{
+) : MemberFinder {
 
     override fun find(memberId: Long): Member {
         return findByIdOrThrow(memberId)

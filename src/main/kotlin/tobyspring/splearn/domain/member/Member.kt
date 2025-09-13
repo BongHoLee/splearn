@@ -1,13 +1,19 @@
-package tobyspring.splearn.domain
+package tobyspring.splearn.domain.member
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.NaturalId
+import tobyspring.splearn.domain.BaseEntity
+import tobyspring.splearn.domain.shared.Email
 
 @Entity
-class Member (
+class Member(
     email: Email,
     nickname: String,
     passwordHash: String,
+    detail: MemberDetail,
 ) : BaseEntity() {
 
     @NaturalId       // 자연키로써 식별성과 고유성(중복 불가)을 보장하기 위함
@@ -23,16 +29,19 @@ class Member (
     var status = MemberStatus.PENDING
         protected set
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = [(CascadeType.ALL)])
+    var detail = detail
+        protected set
+
     companion object {
         fun register(memberRegisterRequest: MemberRegisterRequest, passwordEncoder: PasswordEncoder): Member {
-
             return Member(
                 email = Email(memberRegisterRequest.email),
                 nickname = memberRegisterRequest.nickname,
-                passwordHash = passwordEncoder.encode(memberRegisterRequest.password)
+                passwordHash = passwordEncoder.encode(memberRegisterRequest.password),
+                detail = MemberDetail.create()
             )
         }
-
     }
 
     fun activate() {
@@ -41,6 +50,7 @@ class Member (
         }
 
         this.status = MemberStatus.ACTIVE
+        this.detail.setActivatedAt()
     }
 
 
@@ -50,6 +60,7 @@ class Member (
         }
 
         this.status = MemberStatus.DEACTIVATED
+        this.detail.deactivate()
     }
 
     fun isActive(): Boolean = this.status == MemberStatus.ACTIVE
@@ -67,3 +78,4 @@ class Member (
     }
 
 }
+
