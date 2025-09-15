@@ -1,6 +1,5 @@
 package tobyspring.splearn.domain.member
 
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import org.springframework.util.Assert
 import tobyspring.splearn.domain.BaseEntity
@@ -21,7 +20,6 @@ class MemberDetail(
         }
     }
 
-    @Embedded
     var profile = profile
         protected set
 

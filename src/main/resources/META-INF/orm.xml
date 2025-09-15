@@ -20,6 +20,10 @@
             <unique-constraint name="UK_MEMBER_EMAIL_ADDRESS">
                 <column-name>email_address</column-name>
             </unique-constraint>
+
+            <unique-constraint name="UK_MEMBER_DETAIL_ID">
+                <column-name>detail_id</column-name>
+            </unique-constraint>
         </table>
         <attributes>
             <basic name="nickname">
@@ -37,6 +41,40 @@
 
             <embedded name="email">
             </embedded>
+
+            <one-to-one name="detail" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="tobyspring.splearn.domain.member.MemberDetail">
+        <table name="member_detail">
+            <unique-constraint name="UK_MEMBER_DETAIL_PROFILE_ADDRESS">
+                <column-name>profile_address</column-name>
+            </unique-constraint>
+        </table>
+        <attributes>
+            <basic name="introduction">
+                <column name="introduction" column-definition="TEXT"/>
+            </basic>
+
+            <basic name="registeredAt">
+                <column name="registered_at" nullable="false"/>
+            </basic>
+
+            <basic name="activatedAt">
+                <column name="activated_at"/>
+            </basic>
+
+            <basic name="deactivatedAt">
+                <column name="deactivated_at"/>
+            </basic>
+
+            <embedded name="profile">
+            </embedded>
         </attributes>
     </entity>
 
@@ -44,6 +82,14 @@
         <attributes>
             <basic name="address">
                 <column name="email_address" nullable="false" length="200"/>
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="tobyspring.splearn.domain.member.Profile">
+        <attributes>
+            <basic name="address">
+                <column name="profile_address" length="15"/>
             </basic>
         </attributes>
     </embeddable>

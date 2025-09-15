@@ -2,6 +2,7 @@ package tobyspring.splearn.application.member.provided
 
 import jakarta.validation.Valid
 import tobyspring.splearn.domain.member.Member
+import tobyspring.splearn.domain.member.MemberInfoUpdateRequest
 import tobyspring.splearn.domain.member.MemberRegisterRequest
 
 /**
@@ -11,4 +12,8 @@ interface MemberRegister {
     fun register(@Valid request: MemberRegisterRequest): Member
 
     fun activate(memberId: Long): Member
+
+    fun deactivate(memberId: Long): Member
+
+    fun updateInfo(@Valid memberInfoUpdateRequest: MemberInfoUpdateRequest, memberId: Long): Member
 }

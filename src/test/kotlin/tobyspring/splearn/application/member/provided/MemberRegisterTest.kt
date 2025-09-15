@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import tobyspring.splearn.domain.member.DuplicateEmailException
 import tobyspring.splearn.domain.member.MemberFixture
+import tobyspring.splearn.domain.member.MemberInfoUpdateRequest
 import tobyspring.splearn.domain.member.MemberRegisterRequest
 import tobyspring.splearn.domain.member.MemberStatus
 import tobyspring.splearn.support.TestContainersConfig
@@ -29,7 +30,7 @@ import tobyspring.splearn.support.TestContainersConfig
 @Import(TestContainersConfig::class)
 internal class MemberRegisterTest(
     private val memberRegister: MemberRegister,
-    private val entityManager: EntityManager
+    private val entityManager: EntityManager,
 ) : FunSpec() {
     override fun extensions() = listOf(SpringExtension)
 
@@ -84,6 +85,55 @@ internal class MemberRegisterTest(
             entityManager.flush()
 
             activated.status shouldBe MemberStatus.ACTIVE
+            activated.detail.activatedAt shouldNotBe null
+        }
+
+        test("deactivate") {
+            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
+
+            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
+            entityManager.flush()
+            entityManager.clear()
+
+            val activated = memberRegister.activate(member.id!!)
+
+            // flush를 해줘야 update 쿼리 발생
+            entityManager.flush()
+            entityManager.clear()
+
+
+            val deactivated = memberRegister.deactivate(member.id!!)
+
+            deactivated.status shouldBe MemberStatus.DEACTIVATED
+            deactivated.detail.deactivatedAt shouldNotBe null
+        }
+
+        test("updateInfo ") {
+            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
+
+            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
+            entityManager.flush()
+            entityManager.clear()
+
+            val activated = memberRegister.activate(member.id!!)
+
+            // flush를 해줘야 update 쿼리 발생
+            entityManager.flush()
+            entityManager.clear()
+
+            val updatedMember = memberRegister.updateInfo(
+                MemberInfoUpdateRequest(
+                    nickname = "newnickname",
+                    profileAddress = "newprofile",
+                    introduction = "newintroduction"
+                ),
+                member.id!!
+            )
+
+            updatedMember.nickname shouldBe "newnickname"
+            updatedMember.detail.introduction shouldBe "newintroduction"
+            updatedMember.detail.profile shouldNotBe null
+            updatedMember.detail.profile!!.address shouldBe "newprofile"
         }
 
     }
