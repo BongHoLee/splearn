@@ -73,6 +73,13 @@ class Member(
         this.nickname = nickname
     }
 
+    fun updateInfo(updateRequest: MemberInfoUpdateRequest) {
+        this.nickname = updateRequest.nickname
+
+        // 도메인 로직 상 한번에 보내는게 더 자연스럽다 - 변경이 한 번에 일어날 수 있는 일이기 떄문에.
+        this.detail.updateInfo(updateRequest)
+    }
+
     fun changePassword(password: String, passwordEncoder: PasswordEncoder) {
         this.passwordHash = passwordEncoder.encode(password)
     }
