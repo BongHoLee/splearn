@@ -9,10 +9,12 @@ import tobyspring.splearn.application.member.provided.MemberRegister
 import tobyspring.splearn.application.member.required.EmailSender
 import tobyspring.splearn.application.member.required.MemberRepository
 import tobyspring.splearn.domain.member.DuplicateEmailException
+import tobyspring.splearn.domain.member.DuplicateProfileException
 import tobyspring.splearn.domain.member.Member
 import tobyspring.splearn.domain.member.MemberInfoUpdateRequest
 import tobyspring.splearn.domain.member.MemberRegisterRequest
 import tobyspring.splearn.domain.member.PasswordEncoder
+import tobyspring.splearn.domain.member.Profile
 import tobyspring.splearn.domain.shared.Email
 
 @Service
@@ -58,9 +60,20 @@ class MemberModifyService(
     override fun updateInfo(@Valid memberInfoUpdateRequest: MemberInfoUpdateRequest, memberId: Long): Member {
         val member = memberFinder.find(memberId)
 
+        checkDuplicateProfile(member, memberInfoUpdateRequest.profileAddress)
+
         member.updateInfo(memberInfoUpdateRequest)
 
         return memberRepository.save(member)
+    }
+
+    private fun checkDuplicateProfile(member: Member, profileAddress: String) {
+        if (profileAddress.isEmpty()) return
+        if(member.detail.profile?.address == profileAddress) return
+
+        memberRepository.findByProfile(Profile(profileAddress))?.let {
+            throw DuplicateProfileException("이미 사용중인 프로필 주소입니다 : $profileAddress")
+        }
     }
 
 

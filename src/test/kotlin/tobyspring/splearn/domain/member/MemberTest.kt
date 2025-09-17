@@ -70,6 +70,37 @@ internal class MemberTest : FunSpec({
         }
     }
 
+    context("회원 정보 수정") {
+        test("회원 정보를 수정할 수 있다") {
+            member.activate()
+
+            val updateRequest = MemberInfoUpdateRequest(
+                nickname = "newnickname",
+                profileAddress = "nicknameaddr",
+                introduction = "Hello, I'm new here!"
+            )
+
+            member.updateInfo(updateRequest)
+
+            member.nickname shouldBe updateRequest.nickname
+            member.detail.profile?.address shouldBe updateRequest.profileAddress
+            member.detail.introduction shouldBe updateRequest.introduction
+        }
+
+        test("회원정보 수정은 ACTIVE 상태에서만 가능하다") {
+            val updateRequest = MemberInfoUpdateRequest(
+                nickname = "newnickname",
+                profileAddress = "nicknameaddr",
+                introduction = "Hello, I'm new here!"
+            )
+
+            shouldThrow<IllegalStateException> {
+                member.updateInfo(updateRequest)
+            }
+
+        }
+    }
+
     context("비밀번호 검증") {
         test("비밀번호가 일치하면 true를 반환한다") {
             member.verifyPassword("verysecret2", passwordEncoder) shouldBe true
@@ -81,14 +112,6 @@ internal class MemberTest : FunSpec({
     }
 
     context("속성 변경") {
-        test("닉네임을 변경할 수 있다.") {
-            member.nickname shouldBe "leebongho"
-
-            member.changeNickname("beaoh")
-
-            member.nickname shouldBe "beaoh"
-        }
-
         test("패스워드를 변경할 수 있다.") {
             member.changePassword("new secret", passwordEncoder)
 

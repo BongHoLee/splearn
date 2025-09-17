@@ -12,10 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import tobyspring.splearn.domain.member.DuplicateEmailException
+import tobyspring.splearn.domain.member.DuplicateProfileException
+import tobyspring.splearn.domain.member.Member
 import tobyspring.splearn.domain.member.MemberFixture
 import tobyspring.splearn.domain.member.MemberInfoUpdateRequest
 import tobyspring.splearn.domain.member.MemberRegisterRequest
 import tobyspring.splearn.domain.member.MemberStatus
+import tobyspring.splearn.domain.shared.Email
 import tobyspring.splearn.support.TestContainersConfig
 
 /**
@@ -73,11 +76,7 @@ internal class MemberRegisterTest(
          * 이를 보완하고 실제 INSERT, UPDATE 쿼리가 나가는지 확인하기 위해 entityManager flush, clear를 직접 수행
          */
         test("activate") {
-            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
-
-            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
-            entityManager.flush()
-            entityManager.clear()
+            val member = registerMember()
 
             val activated = memberRegister.activate(member.id!!)
 
@@ -89,11 +88,7 @@ internal class MemberRegisterTest(
         }
 
         test("deactivate") {
-            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
-
-            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
-            entityManager.flush()
-            entityManager.clear()
+            val member = registerMember()
 
             val activated = memberRegister.activate(member.id!!)
 
@@ -109,11 +104,7 @@ internal class MemberRegisterTest(
         }
 
         test("updateInfo ") {
-            val member = memberRegister.register(MemberFixture.createMemberRegisterRequest())
-
-            // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
-            entityManager.flush()
-            entityManager.clear()
+            val member = registerMember()
 
             val activated = memberRegister.activate(member.id!!)
 
@@ -136,6 +127,24 @@ internal class MemberRegisterTest(
             updatedMember.detail.profile!!.address shouldBe "newprofile"
         }
 
+        test("중복된 프로필이 존재하는 경우 updateInfo 실패 ") {
+            var member = registerMember()
+            memberRegister.activate(member.id!!)
+            member = memberRegister.updateInfo(MemberInfoUpdateRequest(nickname = "newnickname", profileAddress = "newprofile", introduction = "newintroduction"), member.id!!)
+
+            val member2 = registerMember("bongho@splearn.app")
+            memberRegister.activate(member2.id!!)
+            entityManager.flush()
+            entityManager.clear()
+
+            shouldThrowExactly<DuplicateProfileException> {
+                memberRegister.updateInfo(MemberInfoUpdateRequest(nickname = "newnickname2", profileAddress = "newprofile", introduction = "newintroduction2"),member2.id!! )
+            }
+
+
+            memberRegister.updateInfo(MemberInfoUpdateRequest(nickname = "newnickname2", profileAddress = "newprofile2", introduction = "newintroduction3"),member2.id!! )
+            memberRegister.updateInfo(MemberInfoUpdateRequest(nickname = "newnickname2", profileAddress = "", introduction = "newintroduction3"),member2.id!! )
+        }
     }
 
 
@@ -144,4 +153,15 @@ internal class MemberRegisterTest(
             memberRegister.register(invalid)
         }
     }
+
+    private fun registerMember(email: String? = null): Member {
+        val member = email?.let { memberRegister.register(MemberFixture.createMemberRegisterRequest(it)) } ?: memberRegister.register(MemberFixture.createMemberRegisterRequest())
+
+        // 강제로 flush, clear 해서 INSERT 쿼리 발생(영속성 컨텍스트 초기화)
+        entityManager.flush()
+        entityManager.clear()
+
+        return member
+    }
+
 }

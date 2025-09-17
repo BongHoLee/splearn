@@ -55,7 +55,7 @@ class Member(
 
 
     fun deactivate() {
-        check(this.status == MemberStatus.ACTIVE) {
+        check(isActive()) {
             "회원은 ACTIVE 상태에서만 비활성화할 수 있습니다."
         }
 
@@ -69,11 +69,10 @@ class Member(
         return passwordEncoder.matches(password, this.passwordHash)
     }
 
-    fun changeNickname(nickname: String) {
-        this.nickname = nickname
-    }
-
     fun updateInfo(updateRequest: MemberInfoUpdateRequest) {
+        check(isActive() ) {
+            "회원 정보는 ACTIVE 상태에서만 변경할 수 있습니다."
+        }
         this.nickname = updateRequest.nickname
 
         // 도메인 로직 상 한번에 보내는게 더 자연스럽다 - 변경이 한 번에 일어날 수 있는 일이기 떄문에.

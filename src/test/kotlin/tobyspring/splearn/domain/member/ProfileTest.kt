@@ -18,13 +18,12 @@ class ProfileTest : FunSpec({
             profile.url() shouldBe "@validaddress"
         }
 
+        test("빈 문자열인 경우 정상 생성(프로필 지우기)") {
+            val profile = Profile(address = "")
+            profile.url() shouldBe "@"
+        }
     }
     context("프로필 생성 실패") {
-        test("빈 문자열인 경우 예외 발생") {
-            shouldThrowExactly<IllegalStateException> { Profile(address = "") }
-                .message shouldBe "프로필 주소 형식이 올바르지 않습니다"
-        }
-
         test("15자 이상인 경우예외 발생") {
             shouldThrowExactly<IllegalStateException> { Profile(address = "12345678980123456578") }
                 .message shouldBe "프로필 주소 형식이 올바르지 않습니다"
