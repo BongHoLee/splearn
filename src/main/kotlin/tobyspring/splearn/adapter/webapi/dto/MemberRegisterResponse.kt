@@ -4,13 +4,13 @@ import tobyspring.splearn.domain.member.Member
 
 data class MemberRegisterResponse(
     val memberId: Long,
-    val emailAddress: String,
+    val email: String,
 ) {
     companion object {
         fun of(member: Member): MemberRegisterResponse =
             MemberRegisterResponse(
                 memberId = member.id,
-                emailAddress = member.email.address
+                email = member.email.address
             )
     }
 }
