@@ -28,7 +28,7 @@ internal class MemberRepositoryTest {
     fun `create Member test`() {
         val member = Member.register(createMemberRegisterRequest(), createPasswordEncoder())
 
-        assertThat(member.id).isNull()
+        assertThat(member.id).isEqualTo(0L)
 
         memberRepository.save(member)
 
@@ -39,7 +39,7 @@ internal class MemberRepositoryTest {
         entityManager.flush()
         entityManager.clear()
 
-        val found = memberRepository.findById(member.id!!)!!
+        val found = memberRepository.findById(member.id)!!
         found.status shouldBe MemberStatus.PENDING
         found.detail.registeredAt shouldNotBe null      // MemberDetail이 Cascading 되어있는지 여부에 대한 테스트를 위함.
 

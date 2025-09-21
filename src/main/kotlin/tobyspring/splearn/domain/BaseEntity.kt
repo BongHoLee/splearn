@@ -11,7 +11,7 @@ import org.hibernate.proxy.HibernateProxy
 abstract class BaseEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    val id: Long = 0L
 ) {
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -23,7 +23,7 @@ abstract class BaseEntity(
         if (thisEffectiveClass != oEffectiveClass) return false
         other as BaseEntity
 
-        return id != null && id == other.id
+        return id != 0L && id == other.id
     }
 
     final override fun hashCode(): Int =
