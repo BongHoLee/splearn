@@ -48,6 +48,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-json:5.7.2")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 
+    // archunit
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
+
     // MockK + Spring 어댑터 (추천)
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("com.ninja-squad:springmockk:4.0.2")

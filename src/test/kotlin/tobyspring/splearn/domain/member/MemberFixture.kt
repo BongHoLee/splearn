@@ -1,5 +1,6 @@
 package tobyspring.splearn.domain.member
 
+import tobyspring.splearn.domain.member.MemberRegisterRequest
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.memberProperties
 
